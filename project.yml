@@ -1,0 +1,44 @@
+# project.yml — يُستخدم مع XcodeGen لتوليد مشروع Xcode تلقائياً
+# يُبنى عبر GitHub Actions (ماك سحابي) لإخراج IPA دون الحاجة لامتلاك ماك.
+
+name: EliteIPA
+options:
+  bundleIdPrefix: com.eliteipa
+  deploymentTarget:
+    iOS: "14.0"
+  createIntermediateGroups: true
+
+packages:
+  ZIPFoundation:
+    url: https://github.com/weichsel/ZIPFoundation.git
+    from: 0.9.0
+
+targets:
+  EliteIPA:
+    type: application
+    platform: iOS
+    sources:
+      - path: OFFSign
+    dependencies:
+      - package: ZIPFoundation
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.eliteipa.signer
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: OFFSign/Resources/Info.plist
+        SWIFT_OBJC_BRIDGING_HEADER: OFFSign/Engine/EliteIPA-Bridging-Header.h
+        CLANG_CXX_LANGUAGE_STANDARD: "c++14"
+        CLANG_CXX_LIBRARY: "libc++"
+        # توقيع ذاتي/AdHoc أثناء البناء (سيُعاد توقيعه بشهادة المستخدم على الجهاز)
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGNING_ALLOWED: "NO"
+        # مسارات ترويسات zsign بعد دمجها
+        HEADER_SEARCH_PATHS:
+          - "$(SRCROOT)/zsign/src"
+          - "$(SRCROOT)/zsign/src/common"
+        OTHER_LDFLAGS:
+          - "-lcrypto"
+          - "-lssl"
+        CODE_SIGN_ENTITLEMENTS: OFFSign/Resources/EliteIPA.entitlements

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>Elite IPA</string>
+    <key>CFBundleName</key>
+    <string>Elite IPA</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.eliteipa.signer</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchScreen</key>
+    <dict/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>MinimumOSVersion</key>
+    <string>14.0</string>
+
+    <!-- دعم تصفّح المستندات والوصول للملفات -->
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
+
+    <!-- صلاحية الوصول لألبوم الصور لتغيير الأيقونة -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>للسماح باختيار أيقونة جديدة للتطبيق من ألبوم الصور.</string>
+
+    <!-- السماح بالاتصال بالسيرفر المحلي للتثبيت المباشر -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <!-- مخططات الروابط للتثبيت -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>itms-services</string>
+        <string>tg</string>
+    </array>
+</dict>
+</plist>

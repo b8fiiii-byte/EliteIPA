@@ -1,0 +1,42 @@
+name: Build Elite IPA
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Prepare Project Structure
+        run: |
+          mkdir -p OFFSign/Views OFFSign/ViewModels OFFSign/Services OFFSign/Resources OFFSign/Models OFFSign/Engine
+          mv AppDetailView.swift AppLibraryView.swift FilesView.swift RootTabView.swift SettingsView.swift SignOptionsView.swift OFFSign/Views/
+          mv AppLibraryViewModel.swift FilesViewModel.swift SettingsViewModel.swift OFFSign/ViewModels/
+          mv CertificateChecker.swift FileBrowser.swift HTTPServer.swift IPAInspector.swift InstallService.swift KeychainManager.swift LocalInstallServer.swift SigningService.swift StorageManager.swift TLSManager.swift OFFSign/Services/
+          mv EliteIPA.entitlements Info.plist Theme.swift OFFSign/Resources/
+          mv Models.swift OFFSign/Models/
+          mv EliteIPA-Bridging-Header.h zsign_bridge.cpp zsign_bridge.h OFFSign/Engine/
+          mv OFFSignApp.swift OFFSign/
+
+      - name: Generate Project
+        run: xcodegen generate
+
+      - name: Build IPA
+        run: |
+          xcodebuild -project EliteIPA.xcodeproj -scheme EliteIPA -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO clean build
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/EliteIPA.app Payload/
+          zip -r EliteIPA.ipa Payload
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: EliteIPA
+          path: EliteIPA.ipa

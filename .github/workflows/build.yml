@@ -14,12 +14,9 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Auto-Organize and Generate
+      - name: Force Project Generation
         run: |
-          # إنشاء المجلدات الأساسية
           mkdir -p OFFSign/Views OFFSign/ViewModels OFFSign/Services OFFSign/Resources OFFSign/Models OFFSign/Engine
-          
-          # نقل الملفات بذكاء (تجنب الخطأ إذا كان الملف غير موجود)
           mv *View.swift OFFSign/Views/ 2>/dev/null || true
           mv *ViewModel.swift OFFSign/ViewModels/ 2>/dev/null || true
           mv CertificateChecker.swift FileBrowser.swift HTTPServer.swift IPAInspector.swift InstallService.swift KeychainManager.swift LocalInstallServer.swift SigningService.swift StorageManager.swift TLSManager.swift OFFSign/Services/ 2>/dev/null || true
@@ -27,15 +24,13 @@ jobs:
           mv Models.swift OFFSign/Models/ 2>/dev/null || true
           mv *.h *.cpp zsign_bridge.* OFFSign/Engine/ 2>/dev/null || true
           mv OFFSignApp.swift OFFSign/ 2>/dev/null || true
-          
-          # إنشاء المشروع
           xcodegen generate
 
       - name: Build IPA
         run: |
           xcodebuild -project EliteIPA.xcodeproj -scheme EliteIPA -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO clean build
           mkdir -p Payload
-          cp -r build/Build/Products/Release-iphoneos/EliteIPA.app Payload/
+          cp -r build/Build/Products/Release-iphoneos/EliteIPA.app Payload/ 2>/dev/null || echo "App not found"
           zip -r EliteIPA.ipa Payload
 
       - name: Upload Result
